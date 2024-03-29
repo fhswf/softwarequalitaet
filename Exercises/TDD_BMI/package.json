@@ -9,7 +9,7 @@
         "test": "cypress run --headless"
     },
     "dependencies": {
-        "express": "^4.18.2"
+        "express": "^4.19.2"
     },
     "devDependencies": {
         "cypress": "^13.3.1",
