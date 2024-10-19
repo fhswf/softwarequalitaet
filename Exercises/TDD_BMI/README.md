@@ -39,7 +39,7 @@ Definiere zunächst die Testfälle, die in der Anwendung erfüllt sein sollen. E
 
 ### Schritt 2: Testfälle schreiben
 
-Schreibe nun Test für jeden der definierten Fälle. Verwende dafür das Jest-Framework.
+Schreibe nun Test für jeden der definierten Fälle.
 
 ### Schritt 3: Implementierung der Anwendung
 
