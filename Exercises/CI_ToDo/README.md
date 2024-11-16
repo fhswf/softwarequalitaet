@@ -9,7 +9,7 @@ Ihre Aufgabe besteht darin, eine GitHub-Action zu erstellen, die automatisierte 
 
 ### Vorbereitung
 
-1. **Clonen des Repositories**: Legen Sie (**als Gruppe!**) einen Clone des [Repositories https://github.com/fhswf/todo](https://github.com/fhswf/todo) an. 
+1. **Forken des Repositories**: Legen Sie (**als Gruppe!**) einen Fork des [Repositories https://github.com/fhswf/todo](https://github.com/fhswf/todo) an. 
    Die Übung des Umgang mit GitHub in einem Entwicklerteam ist eines der Ziele der Aufgabe. 
    > **Achtung**: Änderungen am Code sollten Sie **nicht** auf dem *main branch* vornehmen. Legen Sie für Ihre individuellen Aufgaben *feature branches* an und erstellen Sie jeweils *pull requests*!
 
