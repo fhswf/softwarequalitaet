@@ -44,7 +44,6 @@ Ihre Aufgabe besteht darin, eine GitHub-Action zu erstellen, die automatisierte 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Generate a token on SonarQube, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-          SONAR_ROOT_CERT: ${{ vars.SONAR_ROOT_CERT }}
    ```
 
 6. **Auswertung der Ergebnisse**: Schauen Sie sich die Ergebnisse der Tests und die SonarQube-Berichte an. Falls es Fehler gibt, sollten Sie diese jetzt beheben und den Prozess erneut durchführen.
