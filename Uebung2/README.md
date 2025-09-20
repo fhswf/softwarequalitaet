@@ -21,6 +21,7 @@ Diese Prinzipien helfen, Software testbar, wartbar und robust zu gestalten. In d
 - Arbeiten Sie in Ihrer Kleingruppe an den Aufgaben.
 - Verwenden Sie Pair-Programming (ideal: 2 Personen; Gruppen bis zu 3 Personen sind möglich). Teilen Sie sich gegebenenfalls in kleinere Teams innerhalb Ihrere Gruppe auf.
 - Falls mehrere Teams innerhalb einer Gruppe parallel arbeiten, kopieren Sie die Code-Datei und benennen Sie diese um, z. B. in `Uebung2-TeamA.py` und `Uebung2-TeamB.py`.
+- Die Dateien sollen später von einer anderen Gruppe gereviewed werden. Falls Sie keine Repository innerhalb der FH-SWF-Organisation verwenden, müssen Sie entweder Ihre Lösungsdateien oder den Link zum öffentlichen Repository unter Angabe Ihrer Gruppennummer **bis zum nachfolgenden Montag** per Mail an den Modulverantwortlichen senden.
 
 ## Aufgabenstellung
 
