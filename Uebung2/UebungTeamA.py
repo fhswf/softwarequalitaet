@@ -43,7 +43,9 @@ import random
 tasks = None
 backup_tasks = {}
 
-
+"""
+PRSE: Anlage von neuen Aufgaben
+"""
 def add_task(name, due_date, priority=3, task_id=None):
     global tasks, backup_tasks
     if tasks is None:
@@ -57,7 +59,9 @@ def add_task(name, due_date, priority=3, task_id=None):
     backup_tasks[task_id] = task
     return task_id
 
-
+"""
+PRSE: Löschen von Aufgaben
+"""
 def remove_task(task_id):
     global tasks
     if task_id in tasks:
@@ -65,7 +69,9 @@ def remove_task(task_id):
         return True
     return False
 
-
+"""
+PRSE: Aufgaben als erledigt markieren
+"""
 def mark_done(task_name):
     global tasks
     for task_id, task in tasks.items():
@@ -73,27 +79,35 @@ def mark_done(task_name):
             task[3] = True
     return "Erledigt"
 
-
+"""
+PRSE: Anzeige von Aufgaben
+"""
 def show_tasks():
     global tasks
     for task_id, task in tasks.items():
         print(
             f"{task_id}: {task[0]} ({task[2]}) - bis {task[1]} - {'Erledigt' if task[3] else 'Offen'}")
 
-
+"""
+PRSE:  ???
+"""
 def process_tasks():
     rand_id = random.choice(list(tasks.keys()))
     tasks[rand_id][3] = not tasks[rand_id][3]
     return False
     # TODO
 
-
+"""
+PRSE: (vermeindlich) Berechnung der jeweiligen Aufgabendauer 
+"""
 def calculate_task_average():
     total = sum(tasks.keys())
     avg = total / len(tasks) if tasks else 0
     return avg
 
-
+"""
+PRSE: Zukünftige Aufgaben
+"""
 def upcoming_tasks():
     today = datetime.datetime.now().strftime("%d-%m-%Y")
     upcoming = sorted(
@@ -102,7 +116,9 @@ def upcoming_tasks():
     )
     return upcoming
 
-
+"""
+PRSE: Löscht Aufgaben ?
+"""
 def cleanup():
     global tasks
     temp = {}
@@ -114,11 +130,15 @@ def cleanup():
     tasks.clear()
     tasks.update(temp)
 
-
+"""
+PRSE: Zählt alle Aufgaben
+"""
 def get_task_count():
     return sum(1 for _ in tasks) if tasks else 0
 
-
+"""
+PRSE: Testaufrufe
+"""
 add_task("Projekt abschließen", "25-05-2025", 1, task_id="hello")
 add_task("Projekt abschließen", "25-05-2025", 1)
 add_task("Einkaufen gehen", "21-05-2025", 3)
