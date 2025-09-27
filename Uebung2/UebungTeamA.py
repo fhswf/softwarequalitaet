@@ -1,3 +1,15 @@
+""""
+Kommentare PRSE
+- Der Sinn des Programm ist eine ToDo/Aufgabenliste
+- Bei Funktionsdefinition (add_task): Die ersten beiden Parameter sind verpflichtend, die letzten beiden optional; Es wird ein standard Wert übermittelt
+- Die Taskid wird durch Länge+Zufallszahl bestimmt -> im idealfall werden IDs durchnummeriert
+
+Kommentare HAHR
+- remove_task: Was passiert, wenn es mehrere Aufgaben derselben ID gibt? Werden dann alle mit der gleichen ID gelöscht oder gibt es einen Fehler?
+- mark_done: Warum wird das task-Objekt mit dem Task-Namen verglichen? Warum wird dann der Task mit Index 3 auf Erledigt gesetzt?
+- was macht process_tasks und warum steht da ein TODO, was muss da gemacht werden? Funktioniert es richtig?
+"""
+
 import datetime
 import random
 
