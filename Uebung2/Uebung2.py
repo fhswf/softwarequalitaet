@@ -28,11 +28,16 @@ Aufgabe 2:
 -Strukturierung des Codes, was sind Hauptfunktionen, Hilfsfunktionen
 '''
 
+'''
+Dieses Skript soll eine textbasierte Aufgabenliste darstellen. Es kümmert sich um Eingabe, Ausgabe und einfaches Taskmanagement
+'''
+
 import datetime
 import random
 
 tasks = None
 backup_tasks = {}
+
 
 
 def add_task(name, due_date, priority=3, task_id=None):
