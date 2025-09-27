@@ -1,4 +1,5 @@
 """"
+A1
 Kommentare PRSE
 - Der Sinn des Programm ist eine ToDo/Aufgabenliste
 - Bei Funktionsdefinition (add_task): Die ersten beiden Parameter sind verpflichtend, die letzten beiden optional; Es wird ein standard Wert übermittelt
@@ -6,8 +7,34 @@ Kommentare PRSE
 
 Kommentare HAHR
 - remove_task: Was passiert, wenn es mehrere Aufgaben derselben ID gibt? Werden dann alle mit der gleichen ID gelöscht oder gibt es einen Fehler?
-- mark_done: Warum wird das task-Objekt mit dem Task-Namen verglichen? Warum wird dann der Task mit Index 3 auf Erledigt gesetzt?
 - was macht process_tasks und warum steht da ein TODO, was muss da gemacht werden? Funktioniert es richtig?
+"""
+
+""""
+A2
+Kommentare PRSE
+- Positive Aspekte:
+-- Verwendung von Pflicht- und Optionalen Feldern
+-- Immer Verwendung des aktuellen Datums -> feste Struktur, allerdings warum wird das aktuelle Datum einfach angehangen am Ende vom Objekt?
+-Verbesserungen:
+--Kein "Random" bei der Erstellung TaskID
+-- calculate_task_average wird erstellt, aber nicht verwendet
+-- Mehr (sinnvolle) Kommentare zum besseren Verständnis des Codes
+-- Aufruf von add_task mit String als ID -> Erwartung: Fehlerausgabe/Hinweis
+
+
+Kommentare HAHR
+- Positive Aspekte:
+-- Variablennamen und Methodennamen sind prinzipiell verständlich / nachvollziehbar
+-- Code ist ausführbar
+
+Verbesserungen:
+- Funktionen kommentieren
+- Einheitliches Task-Objekt
+- Warum wird der Task noch in backup_tasks geschoben, aber dann nicht weiterverwendet? Welche Funktion hat backup_tasks?
+- mark_done überarbeiten, damit es den korrekten Task als erledigt markiert
+- Sinnvolle Reihenfolge für die Eigenschaften eines Tasks zur Ausgabe als Liste
+- Warum wird True und False bei dem "Erledigt" und "Offen" gesetzt?
 """
 
 import datetime
