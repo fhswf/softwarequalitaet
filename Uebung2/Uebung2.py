@@ -1,7 +1,9 @@
 #WMME CRVA TMWN
 
 
-''' Aufgabe 1:
+''' 
+Aufgabe 1:
+
 -process_tasks:
 Nicht aus Namen oder Code direkt ersichtlich, welche Funktion dahintersteht
 
@@ -13,6 +15,19 @@ Nur vom Betrachten der Funktion wird nicht klar, was sie macht/machen soll, ansc
 -Wie/ in welcher Reihenfolge muss man die Funktionen aufrufen, dass am Ende eine vollständige Liste entsteht? (wann add(), wann process_tasks()?)
 
 '''
+
+'''
+Aufgabe 2:
+-Kommentare hinzufügen
+    -Erklärung der Funktionen
+    -Was kommt aus der Funktion raus? (Datentyp)
+    -Erklärung der Struktur "tasks" und somit "task"
+
+-backup_tasks wird nicht verwendet, Entfernung der "Leiche"
+
+-Strukturierung des Codes, was sind Hauptfunktionen, Hilfsfunktionen
+'''
+
 import datetime
 import random
 
