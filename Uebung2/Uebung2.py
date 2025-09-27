@@ -1,3 +1,18 @@
+#WMME CRVA TMWN
+
+
+''' Aufgabe 1:
+-process_tasks:
+Nicht aus Namen oder Code direkt ersichtlich, welche Funktion dahintersteht
+
+-Struktur von "tasks" nicht direkt ersichtlich
+
+-cleanup:
+Nur vom Betrachten der Funktion wird nicht klar, was sie macht/machen soll, anschauen des restlichen Codes erforderlich
+
+-Wie/ in welcher Reihenfolge muss man die Funktionen aufrufen, dass am Ende eine vollständige Liste entsteht? (wann add(), wann process_tasks()?)
+
+'''
 import datetime
 import random
 
