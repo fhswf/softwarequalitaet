@@ -1,145 +1,144 @@
-""""
-A1
-Kommentare PRSE
-- Der Sinn des Programm ist eine ToDo/Aufgabenliste
-- Bei Funktionsdefinition (add_task): Die ersten beiden Parameter sind verpflichtend, die letzten beiden optional; Es wird ein standard Wert übermittelt
-- Die Taskid wird durch Länge+Zufallszahl bestimmt -> im idealfall werden IDs durchnummeriert
+# Aufgabenergebnisse
 
-Kommentare HAHR
-- remove_task: Was passiert, wenn es mehrere Aufgaben derselben ID gibt? Werden dann alle mit der gleichen ID gelöscht oder gibt es einen Fehler?
-- was macht process_tasks und warum steht da ein TODO, was muss da gemacht werden? Funktioniert es richtig?
-"""
+# A1
+# Kommentare PRSE
+# - Der Sinn des Programm ist eine ToDo/Aufgabenliste
+# - Bei Funktionsdefinition (add_task): Die ersten beiden Parameter sind verpflichtend, die letzten beiden optional; Es wird ein standard Wert übermittelt
+# - Die Taskid wird durch Länge+Zufallszahl bestimmt -> im idealfall werden IDs durchnummeriert
 
-""""
-A2
-Kommentare PRSE
-- Positive Aspekte:
--- Verwendung von Pflicht- und Optionalen Feldern
--- Immer Verwendung des aktuellen Datums -> feste Struktur, allerdings warum wird das aktuelle Datum einfach angehangen am Ende vom Objekt?
--Verbesserungen:
---Kein "Random" bei der Erstellung TaskID
--- calculate_task_average wird erstellt, aber nicht verwendet
--- Mehr (sinnvolle) Kommentare zum besseren Verständnis des Codes
--- Aufruf von add_task mit String als ID -> Erwartung: Fehlerausgabe/Hinweis
+# Kommentare HAHR
+# - remove_task: Was passiert, wenn es mehrere Aufgaben derselben ID gibt? Werden dann alle mit der gleichen ID gelöscht oder gibt es einen Fehler?
+# - was macht process_tasks und warum steht da ein TODO, was muss da gemacht werden? Funktioniert es richtig?
 
+# A2
+# Kommentare PRSE
+# - Positive Aspekte:
+# -- Verwendung von Pflicht- und Optionalen Feldern
+# -- Immer Verwendung des aktuellen Datums -> feste Struktur, allerdings warum wird das aktuelle Datum einfach angehangen am Ende vom Objekt?
+# -Verbesserungen:
+# --Kein "Random" bei der Erstellung TaskID
+# -- calculate_task_average wird erstellt, aber nicht verwendet
+# -- Mehr (sinnvolle) Kommentare zum besseren Verständnis des Codes
+# -- Aufruf von add_task mit String als ID -> Erwartung: Fehlerausgabe/Hinweis
 
-Kommentare HAHR
-- Positive Aspekte:
--- Variablennamen und Methodennamen sind prinzipiell verständlich / nachvollziehbar
--- Code ist ausführbar
+# Kommentare HAHR
+# - Positive Aspekte:
+# -- Variablennamen und Methodennamen sind prinzipiell verständlich / nachvollziehbar
+# -- Code ist ausführbar
 
-Verbesserungen:
-- Funktionen kommentieren
-- Einheitliches Task-Objekt
-- Warum wird der Task noch in backup_tasks geschoben, aber dann nicht weiterverwendet? Welche Funktion hat backup_tasks?
-- mark_done überarbeiten, damit es den korrekten Task als erledigt markiert
-- Sinnvolle Reihenfolge für die Eigenschaften eines Tasks zur Ausgabe als Liste
-- Warum wird True und False bei dem "Erledigt" und "Offen" gesetzt?
-"""
+# Verbesserungen:
+# - Funktionen kommentieren
+# - Einheitliches Task-Objekt
+# - Warum wird der Task noch in backup_tasks geschoben, aber dann nicht weiterverwendet? Welche Funktion hat backup_tasks?
+# - mark_done überarbeiten, damit es den korrekten Task als erledigt markiert
+# - Sinnvolle Reihenfolge für die Eigenschaften eines Tasks zur Ausgabe als Liste
+# - Warum wird True und False bei dem "Erledigt" und "Offen" gesetzt?
 
+# -------------------------------------- Ab hier beginnt der Code der durch A3 überarbeitet wurde --------------------------------------
+
+# HAHR: Deklaration von globalen Variablen, darunter einem Zähler für die Task-ID und einem einheitlichen Task-Objekt
 import datetime
-import random
+tasks = {}
+task_counter = 1  # HAHR - Zähler für die Task-ID, der immer weiter hochgezählt wird
 
-tasks = None
-backup_tasks = {}
-
-"""
-PRSE: Anlage von neuen Aufgaben
-"""
+# PRSE: Anlage von neuen Aufgaben
 def add_task(name, due_date, priority=3, task_id=None):
-    global tasks, backup_tasks
-    if tasks is None:
-        tasks = {}
-
-    if task_id == None:
-        task_id = len(tasks) + random.randint(2, 7)  # Wichtig! Nicht verändern!
-    task = [name, due_date, priority, False, "user1",
-            datetime.datetime.now().strftime("%d-%m-%Y %H:%M")]
+    global tasks, task_counter
+    if task_id is None:  # HAHR - Prüfung ob es eine Task-ID gibt, falls nicht diese anlegen
+        task_id = task_counter
+        task_counter += 1
+    # HAHR - Prüfung ob Task-ID eine Zahl ist, ansonsten einen Fehler ausgeben
+    elif not isinstance(task_id, int):
+        print("Fehler: Die ID einer Aufgabe muss eine ganze Zahl sein.")
+        return None
+    if task_id in tasks:
+        print("Fehler: Task-ID existiert bereits.")
+        return None
+    task = {
+        "name": name,
+        "due_date": due_date,
+        "priority": priority,
+        "done": False,
+        "user": "user1",
+        "created_at": datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+    }
     tasks[task_id] = task
-    backup_tasks[task_id] = task
     return task_id
 
-"""
-PRSE: Löschen von Aufgaben
-"""
+
+# PRSE: Löschen von Aufgaben
 def remove_task(task_id):
     global tasks
     if task_id in tasks:
         del tasks[task_id]
         return True
+    print("Fehler: Task-ID nicht gefunden.")
     return False
 
-"""
-PRSE: Aufgaben als erledigt markieren
-"""
+# PRSE: Aufgaben als erledigt markieren
 def mark_done(task_name):
     global tasks
-    for task_id, task in tasks.items():
-        if task[0] == task_name:
-            task[3] = True
-    return "Erledigt"
+    found = False
+    for task in tasks.values():
+        if task["name"] == task_name:
+            task["done"] = True
+            found = True
+    return "Erledigt" if found else "Nicht gefunden"
 
-"""
-PRSE: Anzeige von Aufgaben
-"""
+
+# PRSE: Anzeige von Aufgaben
 def show_tasks():
     global tasks
     for task_id, task in tasks.items():
+        status = "Erledigt" if task["done"] else "Offen"
         print(
-            f"{task_id}: {task[0]} ({task[2]}) - bis {task[1]} - {'Erledigt' if task[3] else 'Offen'}")
+            f"{task_id}: {task['name']} (Prio {task['priority']}) - bis {task['due_date']} - {status}")
 
-"""
-PRSE:  ???
-"""
+
+
+# HAHR: Mögliche Verarbeitung einer Aufgabe: Setzt aktuell eine zufällige Aufgabe auf erledigt oder offen
 def process_tasks():
+    import random
+    if not tasks:
+        print("Keine Aufgaben vorhanden.")
+        return False
     rand_id = random.choice(list(tasks.keys()))
-    tasks[rand_id][3] = not tasks[rand_id][3]
-    return False
-    # TODO
+    tasks[rand_id]["done"] = not tasks[rand_id]["done"]
+    return True
 
-"""
-PRSE: (vermeindlich) Berechnung der jeweiligen Aufgabendauer 
-"""
+
+# PRSE: (vermeindlich) Berechnung der jeweiligen Aufgabendauer
 def calculate_task_average():
     total = sum(tasks.keys())
     avg = total / len(tasks) if tasks else 0
     return avg
 
-"""
-PRSE: Zukünftige Aufgaben
-"""
+
+# PRSE: Zukünftige Aufgaben
 def upcoming_tasks():
     today = datetime.datetime.now().strftime("%d-%m-%Y")
     upcoming = sorted(
-        [task for task in tasks.values() if task[1] >= today],
-        key=lambda x: x[0]
+        [task for task in tasks.values() if task["due_date"] >= today],
+        key=lambda x: x["name"]
     )
     return upcoming
 
-"""
-PRSE: Löscht Aufgaben ?
-"""
+
+# PRSE: Löscht alle erledigten Aufgaben
 def cleanup():
     global tasks
-    temp = {}
-    for task_id, task in tasks.items():
-        if not task[3]:
-            temp[task_id] = task
-    if len(temp) == len(tasks):
-        return
+    temp = {tid: t for tid, t in tasks.items() if not t["done"]}
     tasks.clear()
     tasks.update(temp)
 
-"""
-PRSE: Zählt alle Aufgaben
-"""
-def get_task_count():
-    return sum(1 for _ in tasks) if tasks else 0
 
-"""
-PRSE: Testaufrufe
-"""
-add_task("Projekt abschließen", "25-05-2025", 1, task_id="hello")
+# PRSE: Zählt alle Aufgaben
+def get_task_count():
+    return len(tasks)
+
+
+# PRSE: Testaufrufe
+add_task("Projekt abschließen", "25-05-2025", 1, task_id=50)
 add_task("Projekt abschließen", "25-05-2025", 1)
 add_task("Einkaufen gehen", "21-05-2025", 3)
 add_task("Dokumentation schreiben", "30-05-2025", 2)
