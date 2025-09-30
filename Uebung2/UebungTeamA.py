@@ -38,9 +38,11 @@ import datetime
 tasks = {}
 task_counter = 1  # HAHR - Zähler für die Task-ID, der immer weiter hochgezählt wird
 
+
 # PRSE: Anlage von neuen Aufgaben
-def add_task(name, due_date, priority=3, task_id=None):
+def add_task(name, due_date, priority, **args):
     global tasks, task_counter
+    task_id = args.get("task_id", None)
     if task_id is None:  # HAHR - Prüfung ob es eine Task-ID gibt, falls nicht diese anlegen
         task_id = task_counter
         task_counter += 1
@@ -49,7 +51,15 @@ def add_task(name, due_date, priority=3, task_id=None):
         print("Fehler: Die ID einer Aufgabe muss eine ganze Zahl sein.")
         return None
     if task_id in tasks: # HAHR - Prüfung, ob Task-ID bereits existiert
-        print("Fehler: Task-ID existiert bereits.")
+        print("Fehler: Task-ID" , (task_id) , "existiert bereits.")
+        return None
+    # PRSE: Überprüft ob due_date ein String ist und wandelt diesen ggf. in ein Datum um
+    if isinstance(due_date, str):
+        due_date = datetime.datetime.strptime(due_date, "%d-%m-%Y").date()
+    elif isinstance(due_date, datetime.datetime):
+        due_date = due_date.date()
+    elif not isinstance(due_date, datetime.date):
+        print("Fehler: Ungültiges Datum")
         return None
     task = { # HAHR - Einheitliches Task-Objekt erstellen
         "name": name,
@@ -57,7 +67,7 @@ def add_task(name, due_date, priority=3, task_id=None):
         "priority": priority,
         "done": False,
         "user": "user1",
-        "created_at": datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+        "created_at": datetime.datetime.now()
     }
     tasks[task_id] = task
     return task_id
@@ -72,53 +82,45 @@ def remove_task(task_id):
     print("Fehler: Task-ID nicht gefunden.")
     return False
 
-# PRSE: Aufgaben als erledigt markieren
-def mark_done(task_name):
+# PRSE: Aufgaben als "erledigt" markieren
+def mark_done(task_id):
     global tasks
-    found = False
-    for task in tasks.values():
-        if task["name"] == task_name:
-            task["done"] = True
-            found = True
-    return "Erledigt" if found else "Nicht gefunden"
+    if task_id in tasks:
+        tasks[task_id]["done"] = True  #PRSE: Aufgabe auf "erledigt" setzen
+        return "Erledigt"      
+    return "Nicht gefunden"
 
 
 # PRSE: Anzeige von Aufgaben
 def show_tasks():
     global tasks
-    for task_id, task in tasks.items():
-        status = "Erledigt" if task["done"] else "Offen"
-        print(
-            f"{task_id}: {task['name']} (Prio {task['priority']}) - bis {task['due_date']} - {status}")
-
-
-
-# HAHR: Mögliche Verarbeitung einer Aufgabe: Setzt aktuell eine zufällige Aufgabe auf erledigt oder offen
-def process_tasks():
-    import random
     if not tasks:
         print("Keine Aufgaben vorhanden.")
-        return False
-    rand_id = random.choice(list(tasks.keys()))
-    tasks[rand_id]["done"] = not tasks[rand_id]["done"]
-    return True
-
-
-# PRSE: (vermeindlich) Berechnung der jeweiligen Aufgabendauer
-def calculate_task_average():
-    total = sum(tasks.keys())
-    avg = total / len(tasks) if tasks else 0
-    return avg
+        return
+    # PRSE: Zeigt alle Aufgaben sortiert nach task
+    for task_id, task in sorted(tasks.items()):
+        status = "Erledigt" if task["done"] else "Offen"
+        due = task["due_date"].strftime("%d-%m-%Y") if isinstance(task["due_date"], (datetime.date, datetime.datetime)) else task["due_date"]
+        print(
+            f"{task_id}: {task['name']} "
+            f"(Prio {task['priority']}) - bis {due} - {status}"
+        )
 
 
 # PRSE: Zukünftige Aufgaben
 def upcoming_tasks():
-    today = datetime.datetime.now().strftime("%d-%m-%Y")
-    upcoming = sorted(
-        [task for task in tasks.values() if task["due_date"] >= today],
-        key=lambda x: x["name"]
-    )
-    return upcoming
+    today = datetime.date.today()
+    upcoming = [
+        task for task in tasks.values()
+        if isinstance(task["due_date"], (datetime.date, datetime.datetime)) and task["due_date"] >= today and not task["done"]
+    ]
+    # PRSE: Zeigt alle Aufgaben, sortiert nach dem Fälligkeitsdatum
+    upcoming = sorted(upcoming, key=lambda x: x["due_date"])
+    output_lines=[""]
+    for task in upcoming:
+        due = task["due_date"].strftime("%d-%m-%Y")
+        output_lines.append(f"  - {task['name']} (Prio {task['priority']}) - bis {due} - Offen")
+    return "\n".join(output_lines)
 
 
 # PRSE: Löscht alle erledigten Aufgaben
@@ -131,17 +133,17 @@ def cleanup():
 
 # PRSE: Zählt alle Aufgaben
 def get_task_count():
-    return len(tasks)
+    return sum(1 for task in tasks.values() if not task["done"])
 
 
 # PRSE: Testaufrufe
-add_task("Projekt abschließen", "25-05-2025", 1, task_id=50)
-add_task("Projekt abschließen", "25-05-2025", 1)
-add_task("Einkaufen gehen", "21-05-2025", 3)
-add_task("Dokumentation schreiben", "30-05-2025", 2)
-mark_done("Einkaufen gehen")
-process_tasks()
+add_task("Projekt abschließen", "25-05-2026", 1, task_id=50)
+add_task("Neues Projekt erstellen", "22-05-2026", 1, task_id=50)
+add_task("Projekt abschließen", "25-05-2026", 2)
+add_task("Einkaufen gehen", "21-05-2026", 3)
+add_task("Dokumentation schreiben", "30-05-2026", 2)
+mark_done(2)
 show_tasks()
 print("Offene Aufgaben nach Datum sortiert:", upcoming_tasks())
 cleanup()
-print("Gesamtzahl der Aufgaben:", get_task_count())
+print("Gesamtzahl der offenen Aufgaben:", get_task_count())
