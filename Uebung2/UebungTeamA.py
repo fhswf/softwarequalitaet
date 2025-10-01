@@ -33,7 +33,7 @@
 
 # -------------------------------------- Ab hier beginnt der Code der durch A3 überarbeitet wurde --------------------------------------
 
-# HAHR: Deklaration von globalen Variablen, darunter einem Zähler für die Task-ID und einem einheitlichen Task-Objekt
+# HAHR: Deklaration von globalen Variablen
 import datetime
 tasks = {}
 task_counter = 1  # HAHR - Zähler für die Task-ID, der immer weiter hochgezählt wird
