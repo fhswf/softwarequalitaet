@@ -71,11 +71,11 @@ def show_tasks():
             f"{task_id}: {task[0]} ({task[2]}) - bis {task[1]} - {'Erledigt' if task[3] else 'Offen'}")
 
 
-def process_tasks():
-    rand_id = random.choice(list(tasks.keys()))
-    tasks[rand_id][3] = not tasks[rand_id][3]
-    return False
-    # TODO
+#def process_tasks(): #es gibt keinen sinnvollen Einsatzpunkt für diese Funktion
+#    rand_id = random.choice(list(tasks.keys()))
+#    tasks[rand_id][3] = not tasks[rand_id][3]
+#    return False
+#    # TODO
 
 
 def calculate_task_average():
@@ -114,7 +114,7 @@ add_task("Projekt abschließen", "25-05-2025", 1)
 add_task("Einkaufen gehen", "21-05-2025", 3)
 add_task("Dokumentation schreiben", "30-05-2025", 2)
 mark_done("Einkaufen gehen")
-process_tasks()
+# process_tasks()
 show_tasks()
 print("Offene Aufgaben nach Datum sortiert:", upcoming_tasks())
 cleanup()
