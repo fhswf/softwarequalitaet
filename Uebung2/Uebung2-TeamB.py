@@ -29,7 +29,7 @@ import random
 
 tasks: dict[int, list] = {}  #klare typzuweisung der schlüssel und werte
 backup_tasks: dict[int,list] = {} 
-task_id_counter = 1  #Zähler für die Task IDs 
+task_id_counter = 0  #Zähler für die Task IDs 
 
 
 def add_task(name, due_date, priority=3):
@@ -96,7 +96,7 @@ def cleanup():
 #    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     temp = {}
     for task_id, task in tasks.items():
-        if task[3]: #nur offene aufgaben werden behalten
+        if not task[3]: #nur offene aufgaben werden behalten
             temp[task_id] = task
  #   if len(temp) == len(tasks):  #erfüllt keinen sinnvollen Zweck
  #      return       
@@ -104,8 +104,9 @@ def cleanup():
     tasks.update(temp)
 
 
-def get_task_count():
-    return len(upcoming_tasks())  #Zählen der offenen Aufgaben
+def get_task_count() -> int:    #Rückgabe der Anzahl der offenen Aufgaben
+    return sum(1 for task in tasks.values() if not task[3]) #
+
 
 add_task("Projekt abschließen", "25-12-2025", 1) #id wird automatisch gesetzt
 add_task("Projekt abschließen", "25-05-2026", 1)
