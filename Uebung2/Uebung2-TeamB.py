@@ -41,7 +41,7 @@ def add_task(name, due_date, priority=3):
     task_id_counter += 1 
     task_id =task_id_counter #Automatische Zuweisung der Task ID
 
-    task = [name, due_date, priority, False, "user1",
+    task = [name, datetime.datetime.strptime(due_date,"%d-%m-%Y"), priority, False, "user1", #für den Vergleich in upcoming_tasks wird das Datum in ein datetime Objekt umgewandelt
             datetime.datetime.now().strftime("%d-%m-%Y %H:%M")]
     tasks[task_id] = task
     backup_tasks[task_id] = task
