@@ -29,15 +29,18 @@ import random
 
 tasks: dict[int, list] = {}  #klare typzuweisung der schlüssel und werte
 backup_tasks: dict[int,list] = {} 
+task_id_counter = 1  #Zähler für die Task IDs 
 
 
-def add_task(name, due_date, priority=3, task_id=None):
+def add_task(name, due_date, priority=3):
 #    global tasks, backup_tasks #neue globalen weden nicht in jeder funktion gebraucht
 #   if tasks is None: #Wird nicht gebraucht, da tasks schon initialisiert ist
 #        tasks = {} #Wird nicht gebraucht, da tasks schon initialisiert ist
 
-    if task_id == None:
-        task_id = len(tasks) + random.randint(2, 7)  # Wichtig! Nicht verändern!
+    global task_id_counter    #Zähler für die Task IDs
+    task_id_counter += 1 
+    task_id =task_id_counter #Automatische Zuweisung der Task ID
+
     task = [name, due_date, priority, False, "user1",
             datetime.datetime.now().strftime("%d-%m-%Y %H:%M")]
     tasks[task_id] = task
@@ -106,7 +109,7 @@ def get_task_count():
     return sum(1 for _ in tasks) if tasks else 0
 
 
-add_task("Projekt abschließen", "25-05-2025", 1, task_id="hello")
+add_task("Projekt abschließen", "25-05-2025", 1) #id wird automatisch gesetzt
 add_task("Projekt abschließen", "25-05-2025", 1)
 add_task("Einkaufen gehen", "21-05-2025", 3)
 add_task("Dokumentation schreiben", "30-05-2025", 2)
