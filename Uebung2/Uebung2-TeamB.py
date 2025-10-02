@@ -58,9 +58,8 @@ def remove_task(task_id):
 
 def mark_done(task_id): #es wird nach task_id und nicht nach name gefragt
 #    global tasks #neue globalen weden nicht in jeder funktion gebraucht
-    for task in tasks.items():  
-        if task[0] == task_id:
-            task[3] = True
+    if task_id in tasks:  
+        tasks[task_id][3] = True  #das 4. Element in der Liste ist der Status
     return True #sollte boolean zurückgeben, ob die aufgabe gefunden und als erledigt markiert wurde
 
 
@@ -85,10 +84,10 @@ def show_tasks():
 
 
 def upcoming_tasks():
-    today = datetime.datetime.now().strftime("%d-%m-%Y")
+    today = datetime.datetime.now()
     upcoming = sorted(
         [task for task in tasks.values() if task[1] >= today],
-        key=lambda x: x[0]
+        key=lambda x: x[1]
     )
     return upcoming
 
@@ -106,16 +105,15 @@ def cleanup():
 
 
 def get_task_count():
-    return sum(1 for _ in tasks) if tasks else 0
+    return len(upcoming_tasks())  #Zählen der offenen Aufgaben
 
-
-add_task("Projekt abschließen", "25-05-2025", 1) #id wird automatisch gesetzt
-add_task("Projekt abschließen", "25-05-2025", 1)
+add_task("Projekt abschließen", "25-12-2025", 1) #id wird automatisch gesetzt
+add_task("Projekt abschließen", "25-05-2026", 1)
 add_task("Einkaufen gehen", "21-05-2025", 3)
 add_task("Dokumentation schreiben", "30-05-2025", 2)
-mark_done("Einkaufen gehen")
+mark_done(3)
 # process_tasks()
 show_tasks()
 print("Offene Aufgaben nach Datum sortiert:", upcoming_tasks())
 cleanup()
-print("Gesamtzahl der Aufgaben:", get_task_count())
+print("Gesamtzahl der offenen Aufgaben:", get_task_count())
