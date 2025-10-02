@@ -56,12 +56,12 @@ def remove_task(task_id):
     return False
 
 
-def mark_done(task_name):
+def mark_done(task_id): #es wird nach task_id und nicht nach name gefragt
 #    global tasks #neue globalen weden nicht in jeder funktion gebraucht
-    for task_id, task in tasks.items():
-        if task[0] == task_name:
+    for task in tasks.items():  
+        if task[0] == task_id:
             task[3] = True
-    return "Erledigt"
+    return True #sollte boolean zurückgeben, ob die aufgabe gefunden und als erledigt markiert wurde
 
 
 def show_tasks():
