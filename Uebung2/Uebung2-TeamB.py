@@ -97,10 +97,10 @@ def cleanup():
 #    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     temp = {}
     for task_id, task in tasks.items():
-        if not task[3]:
+        if task[3]: #nur offene aufgaben werden behalten
             temp[task_id] = task
-    if len(temp) == len(tasks):
-        return
+ #   if len(temp) == len(tasks):  #erfüllt keinen sinnvollen Zweck
+ #      return       
     tasks.clear()
     tasks.update(temp)
 
