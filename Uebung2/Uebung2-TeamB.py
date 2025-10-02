@@ -78,10 +78,10 @@ def show_tasks():
 #    # TODO
 
 
-def calculate_task_average():
-    total = sum(tasks.keys())
-    avg = total / len(tasks) if tasks else 0
-    return avg
+#def calculate_task_average(): #es gibt keinen sinnvollen Einsatzpunkt für diese Funktion
+#    total = sum(tasks.keys())
+#    avg = total / len(tasks) if tasks else 0
+#    return avg
 
 
 def upcoming_tasks():
