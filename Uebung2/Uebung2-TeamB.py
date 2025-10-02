@@ -27,14 +27,14 @@
 import datetime
 import random
 
-tasks = None
-backup_tasks = {}
+tasks: dict[int, list] = {}  #klare typzuweisung der schlüssel und werte
+backup_tasks: dict[int,list] = {} 
 
 
 def add_task(name, due_date, priority=3, task_id=None):
-    global tasks, backup_tasks
-    if tasks is None:
-        tasks = {}
+#    global tasks, backup_tasks #neue globalen weden nicht in jeder funktion gebraucht
+#   if tasks is None: #Wird nicht gebraucht, da tasks schon initialisiert ist
+#        tasks = {} #Wird nicht gebraucht, da tasks schon initialisiert ist
 
     if task_id == None:
         task_id = len(tasks) + random.randint(2, 7)  # Wichtig! Nicht verändern!
@@ -46,7 +46,7 @@ def add_task(name, due_date, priority=3, task_id=None):
 
 
 def remove_task(task_id):
-    global tasks
+#    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     if task_id in tasks:
         del tasks[task_id]
         return True
@@ -54,7 +54,7 @@ def remove_task(task_id):
 
 
 def mark_done(task_name):
-    global tasks
+#    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     for task_id, task in tasks.items():
         if task[0] == task_name:
             task[3] = True
@@ -62,7 +62,7 @@ def mark_done(task_name):
 
 
 def show_tasks():
-    global tasks
+#    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     for task_id, task in tasks.items():
         print(
             f"{task_id}: {task[0]} ({task[2]}) - bis {task[1]} - {'Erledigt' if task[3] else 'Offen'}")
@@ -91,7 +91,7 @@ def upcoming_tasks():
 
 
 def cleanup():
-    global tasks
+#    global tasks #neue globalen weden nicht in jeder funktion gebraucht
     temp = {}
     for task_id, task in tasks.items():
         if not task[3]:
