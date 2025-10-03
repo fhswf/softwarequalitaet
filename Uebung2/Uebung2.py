@@ -63,15 +63,15 @@ Aufgabe 2:
 """
 
 
-###
 ### Dieses Skript soll eine textbasierte Aufgabenliste darstellen. Es kümmert sich um Eingabe, Ausgabe und einfaches Taskmanagement
 ### Autor: XYZ
 ### Version: v 0.9.7
-### Datum: 02.10.25
+### Datum: 03.10.25
 
 import datetime
-import random
+# import random # dont need that 
 
+# index positions for elements of task array
 NAME = 0
 DUE_DATE = 1
 PRIORITY = 2
@@ -80,8 +80,8 @@ AUTHOR = 4
 CREATION_DATE = 5
 
 
-tasks = None
-backup_tasks = {}
+tasks = {} # dictionary, keys: unique ids as int; values: tasks: tasks as arrays
+backup_tasks = {} # dictionary, keys: unique ids as int; values: tasks as arrays
 
 
 ## Main methods ##############################################################################
@@ -99,7 +99,6 @@ def add_task(name, due_date, priority=3, task_id=None):
     task = [name, due_date, priority, False, "user1",
             datetime.datetime.now().strftime("%d-%m-%Y %H:%M")]
     tasks[task_id] = task
-    backup_tasks[task_id] = task
     return task_id
 
 # removes a task with a given id and returns true/false if successful or not
