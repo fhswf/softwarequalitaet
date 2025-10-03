@@ -79,10 +79,10 @@ DONE = 3
 AUTHOR = 4
 CREATION_DATE = 5
 
-
 tasks = {} # dictionary, keys: unique ids as int; values: tasks: tasks as arrays
-backup_tasks = {} # dictionary, keys: unique ids as int; values: tasks as arrays
-
+# dictionary, keys: unique ids as int; values: tasks as arrays
+# serves as container for tasks marked 'done'
+backup_tasks = {} 
 
 ## Main methods ##############################################################################
 
