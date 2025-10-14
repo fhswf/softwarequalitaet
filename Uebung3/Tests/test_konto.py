@@ -1,31 +1,17 @@
 """
 Test-Template für die Konto-Klasse (Test-After Approach)
 ========================================================
-
-TODO: Team A - Implementieren Sie hier Ihre Tests NACH der Konto-Implementierung!
-
-Arbeitsablauf:
-1. Implementieren Sie zuerst die Konto-Klasse in Code/konto.py
-2. Schreiben Sie dann hier umfassende Tests für Ihren Code
-3. Testen Sie normale Fälle UND Grenzfälle
-4. Dokumentieren Sie Ihre Autorschaft in den Tests
-
-Tipps für gute Tests:
-- Verwenden Sie aussagekräftige Test-Namen
-- Testen Sie eine Sache pro Test
-- Nutzen Sie pytest.raises() für Exception-Tests
-- Denken Sie an Grenzwerte (0, negative Zahlen)
+CRVA
 """
 
 import pytest
 from decimal import Decimal
-from Uebung3.Code.konto import *
+from Uebung3.Code.konto import Konto, Kontofehler, Einzahlungsfehler, Auszahlungsfehler
 
 
 class TestKontoErstellung:
     """
-    Tests für die Konto-Erstellung
-    TODO: Team A - Implementieren Sie Tests für den Konstruktor
+    Testet die Kontoerstellung
     """
 
     def test_placeholder_konto_erstellung(self):
@@ -41,33 +27,27 @@ class TestKontoErstellung:
         assert konto.saldo == Decimal("0.00")
 
         # Konto mit ungültiger ID (negativ, 0, String) → Exception?
-        with pytest.raises(TypeError) as exception_info:
+        with pytest.raises(Kontofehler):
             konto = Konto(0, Decimal("0.00"))
-        assert "Konto-ID muss eine ganze Zahl > 0 sein." in exception_info.value
 
-        with pytest.raises(TypeError) as exception_info:
+        with pytest.raises(Kontofehler):
             konto = Konto("Hello", Decimal("0.00"))
-        assert "Konto-ID muss eine ganze Zahl > 0 sein." in exception_info.value
 
-        with pytest.raises(TypeError) as exception_info:
+        with pytest.raises(Kontofehler):
             konto = Konto(-123, Decimal("0.00"))
-        assert "Konto-ID muss eine ganze Zahl > 0 sein." in exception_info.value
 
         # Konto mit ungültigem Saldo (negativ, String) → Exception?
-        with pytest.raises(ValueError) as exception_info:
+        with pytest.raises(Kontofehler):
             konto = Konto(3, Decimal("-50.45"))
-        assert konto.konto_id == 3
-        assert "Startsaldo darf nicht negativ sein." in exception_info.value
 
-        with pytest.raises(TypeError) as exception_info:
+        with pytest.raises(Kontofehler):
             konto = Konto(4, "Hello!")
-        assert konto.konto_id == 4
-        assert "Saldo muss Typ Decimal sein." in exception_info.value
-
-
 
 
 class TestKontoEigenschaften:
+    """
+    Testet die Eigenschaften von konto.Konto
+    """
 
     def test_placeholder_eigenschaften(self):
         test_id = 1
@@ -81,21 +61,16 @@ class TestKontoEigenschaften:
         assert konto.saldo == startsaldo
         
         # - Properties sind read-only (falls gewünscht)
-        with pytest.raises(AttributeError) as exception_info: 
+        with pytest.raises(AttributeError): 
             konto.konto_id = 10
-        assert "AttributeError" in exception_info.typename
 
-        with pytest.raises(AttributeError) as exception_info: 
+        with pytest.raises(AttributeError): 
             konto.saldo = Decimal("12.13")
-        assert "AttributeError" in exception_info.typename
         
-
-
 
 class TestEinzahlung:
     """
-    Tests für die Einzahlungs-Funktionalität
-    TODO: Team A - Testet alle Einzahlungs-Szenarien
+    Testet den korrekten Ablauf von Einzahlungen
     """
 
     def test_placeholder_einzahlung(self):
@@ -122,6 +97,9 @@ class TestEinzahlung:
 
 
 class TestAuszahlung:
+    """
+    Testet den korrekten Ablauf von Auszahlungen
+    """
 
     def test_placeholder_auszahlung(self):
         startbetrag = Decimal("100.00")
@@ -152,6 +130,9 @@ class TestAuszahlung:
 
 
 class TestKontoGrenzfaelle:
+    """
+    Testet Grenzfälle: Große Zahlen oder Zahlen < 0.01 (Zinsen?), sowie String-Repräsentation
+    """
 
     def test_placeholder_grenzfaelle(self):
         startbetrag = Decimal("100.00")
@@ -177,7 +158,7 @@ class TestKontoGrenzfaelle:
         assert konto3.saldo != einzahlungsbetrag_klein # ich erwarte 0.00, nicht 0.00123 
 
         # - String-Repräsentation (__str__, __repr__)
-        str_result = print(konto6)
+        str_result = str(konto6)
         repr_result = repr(konto6)
 
         assert "Konto-ID: 5 Saldo: 100.00" in str_result 

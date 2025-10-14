@@ -33,17 +33,28 @@ class KontoService(KontoServiceInterface):
 
     # to transfer money to someone else
     def ueberweisen(self, von_konto_id: int, zu_konto_id: int, betrag: Decimal) -> None:
-        konto_von: KontoInterface = self.get_konto_by_id(von_konto_id)
-        konto_zu: KontoInterface = self.get_konto_by_id(zu_konto_id)
-        konto_von.auszahlen(betrag)
+        konto_von: KontoInterface = self.__get_konto_by_id(von_konto_id)
+        konto_zu: KontoInterface = self.__get_konto_by_id(zu_konto_id)
+        konto_von.auszahlen(betrag) # this order, because if auszahlen() fails, it will raise an error and konto_zu remains untouched
         konto_zu.einzahlen(betrag)
 
     # to 'grab' money from the konto of someone else
     def einziehen(self, von_konto_id: int, zu_konto_id: int, betrag: Decimal) -> None:
-        konto_von: KontoInterface = self.get_konto_by_id(von_konto_id)
-        konto_zu: KontoInterface = self.get_konto_by_id(zu_konto_id)
+        konto_von: KontoInterface = self.__get_konto_by_id(von_konto_id)
+        konto_zu: KontoInterface = self.__get_konto_by_id(zu_konto_id)
+        konto_zu.auszahlen(betrag) # this order, because if auszahlen() fails, it will raise an error and konto_von remains untouched
         konto_von.einzahlen(betrag)
-        konto_zu.auszahlen(betrag)
+    
+    # added because of test's requirement
+    def einzahlen(self, konto_id: int, betrag: Decimal) -> None: 
+        konto_zu: KontoInterface = self.__get_konto_by_id(konto_id)
+        konto_zu.einzahlen(betrag)
+    
+    # added because of test's requirement
+    def auszahlen(self, konto_id: int, betrag: Decimal) -> None:
+        konto_von: KontoInterface = self.__get_konto_by_id(konto_id)
+        konto_von.auszahlen(betrag)
+        
 
     def get_max_konto_id(self) -> int:
         if not self._konten:
@@ -56,9 +67,18 @@ class KontoService(KontoServiceInterface):
             summe += konto.saldo
         return summe
 
+    # private helper func, use only within this class!
     # ensures, that we got the right konto, if _konten ever gets shuffled
-    def get_konto_by_id(self, konto_id: int) -> KontoInterface: 
+    # raises exception if the konto was not found
+    def __get_konto_by_id(self, konto_id: int) -> KontoInterface: 
         for konto in self._konten:
             if konto.konto_id == konto_id: 
                 return konto
-        raise LookupError(f"Konto mit der ID {konto_id} wurde nicht gefunden.")
+        raise Transaktionsfehler(f"Konto mit der ID {konto_id} wurde nicht gefunden.")
+    
+
+
+
+    
+class Transaktionsfehler(Exception):
+    """Fehler bei Transaktion"""

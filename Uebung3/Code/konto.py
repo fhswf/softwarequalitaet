@@ -14,13 +14,13 @@ class Konto(KontoInterface):
 
     def __init__(self, konto_id: int, saldo: Decimal = Decimal('0.00')):
         if konto_id is None:
-            raise ValueError("Konto-ID darf nicht leer sein.")
+            raise Kontofehler("Konto-ID darf nicht leer sein.")
         if not isinstance(konto_id, int) and konto_id > 0:
-            raise TypeError("Konto-ID muss eine ganze Zahl > 0 sein.")
+            raise Kontofehler("Konto-ID muss eine ganze Zahl > 0 sein.")
         if not isinstance(saldo, Decimal):
-            raise TypeError("Saldo muss Typ Decimal sein.")
+            raise Kontofehler("Saldo muss Typ Decimal sein.")
         if saldo < Decimal('0.00'):
-            raise ValueError("Startsaldo darf nicht negativ sein.")
+            raise Kontofehler("Startsaldo darf nicht negativ sein.")
 
         self._konto_id = konto_id
         self._saldo = saldo
@@ -68,7 +68,7 @@ class Konto(KontoInterface):
 
 
 class Kontofehler(Exception):
-    """ Fehler im Kontosystem """
+    """ Allgemeiner Fehler im Kontosystem """
 
 class Auszahlungsfehler(Kontofehler):
     """ Betrag kann nicht ausgezahlt werden """
