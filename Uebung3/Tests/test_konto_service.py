@@ -2,32 +2,17 @@
 Test-Template für die KontoService-Klasse (Test-After Approach)
 ===============================================================
 CRVA
-
-TODO: Team B - Implementieren Sie hier Ihre Tests NACH der KontoService-Implementierung!
-
-Arbeitsablauf:
-1. Implementieren Sie zuerst die KontoService-Klasse in Code/konto_service.py
-2. Schreiben Sie dann hier umfassende Tests für Ihren Service
-3. Testen Sie alle Service-Methoden gründlich
-4. Dokumentieren Sie Ihre Autorschaft in den Tests
-
-Tipps für Service-Tests:
-- Nutzen Sie pytest fixtures für Setup/Teardown
-- Testen Sie Integration zwischen Service und Konto-Klasse
-- Testen Sie sowohl normale als auch Grenzfälle
-- Testen Sie Validierungslogik im Service
 """
 
 import pytest
 from decimal import Decimal
 from ..Code.konto_service import KontoService, Transaktionsfehler
-from ..Code.konto import Konto, Kontofehler, Einzahlungsfehler, Auszahlungsfehler
+from ..Code.konto import Kontofehler, Einzahlungsfehler, Auszahlungsfehler
 
 
 class TestKontoServiceErstellung:
     """
     Tests für KontoService-Erstellung und Setup
-    TODO: Team B - Testet Service-Initialisierung
     """
 
     def test_placeholder_service_erstellung(self):
@@ -52,10 +37,10 @@ class TestKontoVerwaltung:
         assert service.gesamtsaldo_berechnen() == startgesamtsaldo
         
         # - Konto-ID wird automatisch vergeben
-        assert service.get_max_konto_id == erwarteter_int
+        assert service.get_max_konto_id() == erwarteter_int
         
         # - Konto wird zur internen Liste hinzugefügt
-        assert len(service.konten_auflisten) == erwarteter_int
+        assert len(service.konten_auflisten()) == erwarteter_int
 
         # - Erstellen mit ungültigem Saldo → Exception?
         with pytest.raises(Kontofehler):
@@ -168,46 +153,84 @@ class TestTransaktionen:
 class TestSaldoFunktionen:
     """
     Tests für Saldo-bezogene Funktionen
-    TODO: Team B - Testet Saldo-Abfragen und -Berechnungen
     """
 
     def test_placeholder_gesamtsaldo(self):
-        """TODO: Team B - Tests für gesamtsaldo()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        betrag = Decimal("100.00")
+        erwarteter_gesamtsaldo = Decimal("0.00")
+
         # - Gesamtsaldo bei leerer Kontenliste (0)
+        assert konto_service.gesamtsaldo_berechnen() == erwarteter_gesamtsaldo
+
         # - Gesamtsaldo mit einem Konto
+        konto_service.konto_erstellen(betrag)
+        assert konto_service.gesamtsaldo_berechnen() == betrag
+
         # - Gesamtsaldo mit mehreren Konten
-        # - Korrekte Summe aller Salden
-        assert True, "TODO: Tests für gesamtsaldo implementieren"
+        konto_service.konto_erstellen(betrag)
+        assert konto_service.gesamtsaldo_berechnen() == betrag + betrag
 
 
 class TestUtilityFunktionen:
     """
     Tests für Hilfsfunktionen
-    TODO: Team B - Testet ID-Verwaltung und Export-Funktionen
     """
 
     def test_placeholder_get_max_konto_id(self):
-        """TODO: Team B - Tests für get_max_konto_id()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        betrag: Decimal = Decimal("100.00")
+        erwartete_erste_id = 1
+        erwartete_letzte_id = 1000
+
         # - Erste ID ist 1
         # - IDs werden fortlaufend vergeben
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1): 
+            assert konto_service.konto_erstellen(betrag) == i
+            if i == erwartete_letzte_id: 
+                assert konto_service.get_max_konto_id() == erwartete_letzte_id
+
         # - Keine doppelten IDs
-        assert True, "TODO: Tests für get_max_konto_id implementieren"
+        kontenliste = konto_service.konten_auflisten()
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1):
+            count_for_i = 0
+            for k in kontenliste:
+                if k["konto_id"] == i: 
+                    count_for_i += 1
+            assert count_for_i == 1
 
 
 class TestKontoServiceIntegration:
     """
     Integration-Tests zwischen Service und Konto-Klassen
-    TODO: Team B - Testet das Zusammenspiel aller Komponenten
     """
 
     def test_placeholder_vollstaendiger_workflow(self):
-        """TODO: Team B - Test für kompletten Workflow"""
-        # Beispiel-Test:
+        betrag: Decimal = Decimal("100.00")
+        erwartetes_gesamtsaldo = Decimal("700.00")
+        erwartete_erste_id = 1
+        erwartete_letzte_id = 5
+        
         # 1. Service erstellen
+        konto_service = KontoService()
+        assert konto_service
+
         # 2. Mehrere Konten erstellen
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1): 
+            assert konto_service.konto_erstellen(betrag) == i
+            if i == erwartete_letzte_id: 
+                assert konto_service.get_max_konto_id() == erwartete_letzte_id
+
         # 3. Einzahlungen durchführen
+        konto_service.einzahlen(4, betrag)
+        konto_service.einzahlen(5, betrag)
+        assert konto_service.gesamtsaldo_berechnen() == erwartetes_gesamtsaldo
+
         # 4. Überweisungen durchführen
+        konto_service.ueberweisen(4, 5, betrag)
+        konto_service.ueberweisen(1, 5, betrag)
+        with pytest.raises(Transaktionsfehler):
+            konto_service.ueberweisen(3, 5, betrag + betrag)
+
         # 5. Gesamtsaldo prüfen
-        assert True, "TODO: Integration-Test implementieren"
+        assert konto_service.gesamtsaldo_berechnen() == erwartetes_gesamtsaldo
