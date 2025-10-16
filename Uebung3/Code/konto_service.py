@@ -1,7 +1,11 @@
+"""
+CRVA
+"""
+
 from decimal import Decimal
 from typing import List, Dict
-from .interfaces import KontoServiceInterface, KontoInterface
-from .konto import Konto
+from Uebung3.Code.interfaces import KontoServiceInterface, KontoInterface
+from Uebung3.Code.konto import Konto
 
 class KontoService(KontoServiceInterface):
     """

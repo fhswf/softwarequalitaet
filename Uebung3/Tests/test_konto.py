@@ -1,7 +1,7 @@
 """
+CRVA
 Test-Template für die Konto-Klasse (Test-After Approach)
 ========================================================
-CRVA
 """
 
 import pytest
@@ -28,7 +28,7 @@ class TestKontoErstellung:
 
         # Konto mit ungültiger ID (negativ, 0, String) → Exception?
         with pytest.raises(Kontofehler):
-            konto = Konto(0, Decimal("0.00"))
+            konto = Konto(-1, Decimal("0.00"))
 
         with pytest.raises(Kontofehler):
             konto = Konto("Hello", Decimal("0.00"))

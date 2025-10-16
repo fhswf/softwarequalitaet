@@ -1,13 +1,13 @@
 """
+CRVA
 Test-Template für die KontoService-Klasse (Test-After Approach)
 ===============================================================
-CRVA
 """
 
 import pytest
 from decimal import Decimal
-from ..Code.konto_service import KontoService, Transaktionsfehler
-from ..Code.konto import Kontofehler, Einzahlungsfehler, Auszahlungsfehler
+from Uebung3.Code.konto_service import KontoService, Transaktionsfehler
+from Uebung3.Code.konto import Kontofehler, Einzahlungsfehler, Auszahlungsfehler
 
 
 class TestKontoServiceErstellung:
@@ -229,7 +229,7 @@ class TestKontoServiceIntegration:
         # 4. Überweisungen durchführen
         konto_service.ueberweisen(4, 5, betrag)
         konto_service.ueberweisen(1, 5, betrag)
-        with pytest.raises(Transaktionsfehler):
+        with pytest.raises(Auszahlungsfehler):
             konto_service.ueberweisen(3, 5, betrag + betrag)
 
         # 5. Gesamtsaldo prüfen

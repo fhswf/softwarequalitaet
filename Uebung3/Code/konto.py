@@ -1,5 +1,10 @@
-from decimal import Decimal
-from interfaces import KontoInterface
+"""
+CRVA
+"""
+
+from decimal import Decimal, ROUND_HALF_UP
+from Uebung3.Code.interfaces import KontoInterface
+
 
 class Konto(KontoInterface):
     """
@@ -15,7 +20,7 @@ class Konto(KontoInterface):
     def __init__(self, konto_id: int, saldo: Decimal = Decimal('0.00')):
         if konto_id is None:
             raise Kontofehler("Konto-ID darf nicht leer sein.")
-        if not isinstance(konto_id, int) and konto_id > 0:
+        if not isinstance(konto_id, int) or konto_id <= 0:
             raise Kontofehler("Konto-ID muss eine ganze Zahl > 0 sein.")
         if not isinstance(saldo, Decimal):
             raise Kontofehler("Saldo muss Typ Decimal sein.")
@@ -23,7 +28,7 @@ class Konto(KontoInterface):
             raise Kontofehler("Startsaldo darf nicht negativ sein.")
 
         self._konto_id = konto_id
-        self._saldo = saldo
+        self._saldo = saldo.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     
     @property
     def konto_id(self) -> int:
@@ -39,7 +44,7 @@ class Konto(KontoInterface):
         if betrag <= Decimal('0.00'): 
             raise Einzahlungsfehler("Einzahlung kann nicht null oder negativ sein.")
         self._saldo += betrag 
-        self._saldo = self._saldo.quantize(Decimal("0.01"))
+        self._saldo = self._saldo.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     
     def auszahlen(self, betrag: Decimal) -> None:
         if not isinstance(betrag, Decimal):
@@ -49,7 +54,7 @@ class Konto(KontoInterface):
         if self._saldo - betrag < Decimal('0.00'): 
             raise Auszahlungsfehler("Das Konto darf nicht überzogen werden.")
         self._saldo -= betrag
-        self._saldo = self._saldo.quantize(Decimal("0.01"))
+        self._saldo = self._saldo.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     
     ## checks for equality, uses _konto_id and _saldo
     def __eq__(self, other):
