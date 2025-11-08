@@ -42,29 +42,37 @@ class TestFizzBuzzTDD:
 
         TDD-Autor: [Name und Zeit]
         """
-        # TODO: Euer erster TDD-Test hier
-        assert True, "Placeholder - startet hier mit TDD!"
+        eingabe1 = 1
+        erwartetes_ergebnis1 = str("1")
+        eingabe2 = 3
+        erwartetes_ergebnis2 = str("Fizz")
+        eingabe3 = 5
+        erwartetes_ergebnis3 = str("Buzz")
+        eingabe4 = 15
+        erwartetes_ergebnis4 = str("FizzBuzz")
 
-        # Beispiel-Idee (entfernt nach eigenem Test):
-        # assert fizzbuzz(1) == "1"
+        assert fizzbuzz(eingabe1) == erwartetes_ergebnis1
+        assert fizzbuzz(eingabe2) == erwartetes_ergebnis2
+        assert fizzbuzz(eingabe3) == erwartetes_ergebnis3
 
 
 class TestFizzBuzzErweitert:
     """
     TODO: Team A - Erweiterte Tests, wenn Basis funktioniert
     """
-
-    def test_placeholder_extended_tests(self):
-        """
-        TODO: Team A - Entwickelt weitere Tests für FizzBuzz
-
-        Ideen:
-        - Mehrere Zahlen gleichzeitig testen
-        - Parametrisierte Tests (@pytest.mark.parametrize)
-        - Edge Cases (negative Zahlen, 0, große Zahlen)
-        """
-        # TODO: Erweiterte Tests hier
-        assert True, "TODO: Erweiterte FizzBuzz-Tests implementieren"
+    @pytest.mark.parametrize("n, expected", [
+        (1, "1"),
+        (2, "2"),
+        (3, "Fizz"),
+        (5, "Buzz"),
+        (15, "FizzBuzz"),
+        (30, "FizzBuzz"),
+        (9, "Fizz"),
+        (10, "Buzz"),
+    ])
+    
+    def test_placeholder_extended_tests(n, expected):
+        assert fizzbuzz(n) == expected
 
 
 # TODO: Team A - Optional: TDD-Protokoll
