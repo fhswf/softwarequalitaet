@@ -16,12 +16,10 @@ Autorschaft dokumentieren: Wer hat welchen TDD-Schritt gemacht?
 """
 
 import pytest
-
-# TODO: Team A - Import nach erster Implementierung:
-# from Teil2_TDD_und_Mocking.aufgaben.fizzbuzz_kata import fizzbuzz
-
+from Uebung4.Code.fizzbuzz_kata import fizzbuzz
 
 class TestFizzBuzzTDD:
+    
     """
     TODO: Team A - Entwickelt FizzBuzz mit TDD!
 
@@ -71,24 +69,46 @@ class TestFizzBuzzErweitert:
         (10, "Buzz"),
     ])
     
-    def test_placeholder_extended_tests(n, expected):
+    def test_placeholder_extended_tests(self, n, expected):
         assert fizzbuzz(n) == expected
 
 
-# TODO: Team A - Optional: TDD-Protokoll
+class TestFizzBuzzErweitert_2:
+    def test_erweitert_2(self):
+        eingabe1 = 0
+        erwartetes_ergebnis1 = str("FizzBuzz")
+        
+        assert fizzbuzz(eingabe1) == erwartetes_ergebnis1
+
+class TestFizzBuzzErweitert_3:
+    def test_erweitert_2(self):
+        eingabe1 = -3
+        erwartetes_ergebnis1 = str("Fizz")
+        
+        assert fizzbuzz(eingabe1) == erwartetes_ergebnis1
+
+class TestFizzBuzzErweitert_4:
+    def test_erweitert_2(self):
+        eingabe1 = -30
+        erwartetes_ergebnis1 = str("FizzBuzz")
+        
+        assert fizzbuzz(eingabe1) == erwartetes_ergebnis1
+
+
+# Team A - Optional: TDD-Protokoll
 """
 TDD-Fortschritt dokumentieren:
 
-Test 1: [Was getestet] - Autor: [Name] - Zeit: [Zeit]
-Implementation 1: [Minimale Lösung] - Zeit: [Zeit]
+Test 1: [test_placeholder_start_here - einfache Implementierung von ein paar Fällen] - Autor: [CRVA] - Zeit: [10:45]
+Implementation 1: [return str("FizzBuzz")]] - Zeit: [10:50]
 
-Test 2: [Was getestet] - Autor: [Name] - Zeit: [Zeit]  
-Refactoring: [Was geändert] - Zeit: [Zeit]
+Test 2: [test_placeholder_extended_tests - verschiedene Fälle] - Autor: [CRVA] - Zeit: [11:30]  
+Refactoring: [nicht wirklich was] - Zeit: [11:40]
 
 [Weiter dokumentieren...]
 
 Erkenntnisse:
-- Was war überraschend?
-- Wo musstet ihr refaktorieren?
+- Was war überraschend?: Negative Zahlen werden richtig behandelt
+- Wo musstet ihr refaktorieren?: Unsicher: Ist soll die 0 nun FizzBuzz zurückgeben oder einen anderen Wert???
 - Welche Tests brachten neue Herausforderungen?
 """
