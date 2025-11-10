@@ -20,7 +20,7 @@ Autorschaft dokumentieren: Wer hat welchen TDD-Schritt gemacht?
 import pytest
 
 # TODO: Team B - Import nach erster Implementierung:
-# from Teil2_TDD_und_Mocking.aufgaben.string_calculator_kata import add
+# from ..Code.string_calculator_kata import add
 
 
 class TestStringCalculatorTDD:

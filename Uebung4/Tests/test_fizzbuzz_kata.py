@@ -18,6 +18,10 @@ Autorschaft dokumentieren: Wer hat welchen TDD-Schritt gemacht?
 import pytest
 from Uebung4.Code.fizzbuzz_kata import fizzbuzz
 
+# TODO: Team A - Import nach erster Implementierung:
+# from ..Code.fizzbuzz_kata import fizzbuzz
+
+
 class TestFizzBuzzTDD:
     
     """
