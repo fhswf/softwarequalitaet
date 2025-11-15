@@ -35,14 +35,32 @@ def get_weather_category(city: str) -> str:
         - "warm" (25-30°C)
         - "heiß" (> 30°C)
     """
-    # TODO: Team A - Implementierung hier!
-    # Tipp: Startet mit einfachstem Fall (z.B. nur "angenehm" zurückgeben)
-    # Erweitert schrittweise basierend auf Tests!
-    # 
+    
+    # # Test 1: 
+    # return "angenehm"
+    
+    
+    # Test 2: 
     # API-Call-Code:
-    # url = f"https://api.weather.com/current?city={city}"
-    # response = requests.get(url, timeout=5)
-    # response.raise_for_status()
-    # data = response.json()
-    # temperature = data.get("temperature")
-    pass
+    url = f"https://api.weather.com/current?city={city}"
+    response = requests.get(url, timeout=5)
+    response.raise_for_status()
+    data = response.json()
+    temperature = data.get("temperature")
+    print(data) # mit pytest -s sichtbar     
+    return get_category_string(temperature)
+
+
+def get_category_string(value: int) -> str: 
+    if value > 30: 
+        return "heiß"
+    elif value >= 25: 
+        return "warm"
+    elif value >= 16: 
+        return "angenehm"
+    elif value >= 11: 
+        return "kühl"
+    elif value >= 0: 
+        return "kalt"
+    else: 
+        return "frostgefahr"
