@@ -47,7 +47,8 @@ def get_weather_category(city: str) -> str:
     response.raise_for_status()
     data = response.json()
     temperature = data.get("temperature")
-    print(data) # mit pytest -s sichtbar     
+    # print(data) # mit pytest -s sichtbar  
+    # hier könnte / sollte man noch error handlers einbauen?    
     return get_category_string(temperature)
 
 
