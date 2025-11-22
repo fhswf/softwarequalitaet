@@ -1,154 +1,236 @@
 """
+CRVA
 Test-Template für die KontoService-Klasse (Test-After Approach)
 ===============================================================
-
-TODO: Team B - Implementieren Sie hier Ihre Tests NACH der KontoService-Implementierung!
-
-Arbeitsablauf:
-1. Implementieren Sie zuerst die KontoService-Klasse in Code/konto_service.py
-2. Schreiben Sie dann hier umfassende Tests für Ihren Service
-3. Testen Sie alle Service-Methoden gründlich
-4. Dokumentieren Sie Ihre Autorschaft in den Tests
-
-Tipps für Service-Tests:
-- Nutzen Sie pytest fixtures für Setup/Teardown
-- Testen Sie Integration zwischen Service und Konto-Klasse
-- Testen Sie sowohl normale als auch Grenzfälle
-- Testen Sie Validierungslogik im Service
 """
 
 import pytest
 from decimal import Decimal
+from Uebung3.Code.konto_service import KontoService, Transaktionsfehler
+from Uebung3.Code.konto import Kontofehler, Einzahlungsfehler, Auszahlungsfehler
 
-# TODO: Team B - Entkommentieren Sie nach Ihrer Implementierung:
-# from ..Code.konto_service import KontoService
-# from ..Code.konto import Konto
 
 class TestKontoServiceErstellung:
     """
     Tests für KontoService-Erstellung und Setup
-    TODO: Team B - Testet Service-Initialisierung
     """
 
     def test_placeholder_service_erstellung(self):
-        """
-        Placeholder-Test - ersetzen Sie diesen durch echte Tests!
-
-        Beispiele für Tests:
-        - Service ohne Parameter erstellen
-        - Service mit initialen Konten erstellen
-        - Service-Zustand nach Erstellung prüfen
-        """
-        # TODO: Team B - Ersetzen Sie diesen Placeholder durch echte Tests
-        assert True, "Placeholder - bitte durch echte Tests ersetzen!"
-
-        # Beispiel-Code (entkommentiert nach Implementierung):
-        # service = KontoService()
-        # assert len(service.konten_auflisten()) == 0
+        service = KontoService()
+        assert len(service.konten_auflisten()) == 0
 
 
 class TestKontoVerwaltung:
     """
     Tests für Konto-Erstellung und -Verwaltung
-    TODO: Team B - Testet alle Konto-Verwaltungs-Funktionen
     """
 
     def test_placeholder_konto_erstellen(self):
-        """TODO: Team B - Tests für konto_erstellen()"""
-        # Beispiel-Tests:
-        # - Konto mit gültigem Saldo erstellen
-        # - Konto-ID wird automatisch vergeben
-        # - Konto wird zur internen Liste hinzugefügt
+        service = KontoService()
+        startgesamtsaldo = Decimal("100.00")
+        erwarteter_int = 1
+
         # - Rückgabe der Konto-ID
+        assert service.konto_erstellen(startgesamtsaldo) == erwarteter_int
+        
+        # - Konto mit gültigem Saldo erstellen
+        assert service.gesamtsaldo_berechnen() == startgesamtsaldo
+        
+        # - Konto-ID wird automatisch vergeben
+        assert service.get_max_konto_id() == erwarteter_int
+        
+        # - Konto wird zur internen Liste hinzugefügt
+        assert len(service.konten_auflisten()) == erwarteter_int
+
         # - Erstellen mit ungültigem Saldo → Exception?
-        assert True, "TODO: Tests für konto_erstellen implementieren"
+        with pytest.raises(Kontofehler):
+            service.konto_erstellen(Decimal("-50.00"))
+
+        with pytest.raises(Kontofehler):
+            service.konto_erstellen("Hello!")
+        
 
     def test_placeholder_konten_auflisten(self):
-        """TODO: Team B - Tests für konten_auflisten()"""
-        # Beispiel-Tests:
+        service = KontoService()
+        startgesamtsaldo = Decimal("100.00")
+        erwarteter_int_vor = 0
+        erwarteter_int_nach = 1
+        
         # - Leere Liste bei Service-Start
+        assert len(service.konten_auflisten()) == erwarteter_int_vor
+        
         # - Liste nach Konto-Erstellung
+        service.konto_erstellen(startgesamtsaldo)
+        assert len(service.konten_auflisten()) == erwarteter_int_nach
+
         # - Korrekte Anzahl und Inhalte
-        assert True, "TODO: Tests für konten_auflisten implementieren"
+        test_arr = service.konten_auflisten()
+        assert "konto_id" in test_arr[0] and test_arr[0]["konto_id"] == erwarteter_int_nach and "saldo" in test_arr[0] and test_arr[0]["saldo"] == startgesamtsaldo
+
 
 class TestTransaktionen:
     """
     Tests für Transaktions-Funktionen
-    TODO: Team B - Testet alle Geldtransaktionen über den Service
     """
 
     def test_placeholder_einzahlen(self):
-        """TODO: Team B - Tests für einzahlen()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        einzahlungsbetrag = Decimal("100.00")
+        einzahlungsbetrag_ungueltig = "Hallo!"
+        gueltige_konto_id = 1
+        ungueltige_konto_id = 2
+        konto_service.konto_erstellen(einzahlungsbetrag)
+
         # - Einzahlung auf existierendes Konto
         # - Saldo wird korrekt erhöht
+        konto_service.einzahlen(gueltige_konto_id, einzahlungsbetrag)
+        assert konto_service.gesamtsaldo_berechnen() == einzahlungsbetrag + einzahlungsbetrag
+
         # - Einzahlung auf nicht-existierendes Konto → Exception?
+        with pytest.raises(Transaktionsfehler):
+            konto_service.einzahlen(ungueltige_konto_id, einzahlungsbetrag)
+
         # - Ungültiger Betrag → Exception?
-        assert True, "TODO: Tests für einzahlen implementieren"
+        with pytest.raises(Einzahlungsfehler):
+            konto_service.einzahlen(gueltige_konto_id, einzahlungsbetrag_ungueltig)
 
     def test_placeholder_auszahlen(self):
-        """TODO: Team B - Tests für auszahlen()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        auszahlungsbetrag = Decimal("100.00")
+        erwarteter_gesamtsaldo = Decimal("0.00")
+        gueltige_konto_id = 1
+        ungueltige_konto_id = 2
+        konto_service.konto_erstellen(auszahlungsbetrag)
+        
         # - Auszahlung bei ausreichendem Saldo
         # - Saldo wird korrekt reduziert
+        konto_service.auszahlen(gueltige_konto_id, auszahlungsbetrag)
+        assert konto_service.gesamtsaldo_berechnen() == erwarteter_gesamtsaldo
+                
         # - Auszahlung bei unzureichendem Saldo → Exception?
+        with pytest.raises(Auszahlungsfehler):
+            konto_service.auszahlen(gueltige_konto_id, auszahlungsbetrag)
+
         # - Auszahlung von nicht-existierendem Konto → Exception?
-        assert True, "TODO: Tests für auszahlen implementieren"
+        with pytest.raises(Transaktionsfehler):
+            konto_service.auszahlen(ungueltige_konto_id, auszahlungsbetrag)
 
     def test_placeholder_ueberweisen(self):
-        """TODO: Team B - Tests für ueberweisen()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        betrag = Decimal("100.00")
+        erwarteter_gesamtsaldo = Decimal("200.00")
+        erwarteter_sendersaldo = Decimal("0.00")
+        gueltige_konto_id_1 = 1
+        gueltige_konto_id_2 = 2
+        ungueltige_konto_id = 3
+        konto_service.konto_erstellen(betrag)
+        konto_service.konto_erstellen(betrag)
+
         # - Überweisung zwischen existierenden Konten
+        konto_service.ueberweisen(gueltige_konto_id_1, gueltige_konto_id_2, betrag)
+        assert konto_service.gesamtsaldo_berechnen() == erwarteter_gesamtsaldo
+
+        liste = konto_service.konten_auflisten()
         # - Sender-Saldo wird reduziert
+        assert liste[0]["saldo"] == erwarteter_sendersaldo
+        
         # - Empfänger-Saldo wird erhöht
+        assert liste[1]["saldo"] == erwarteter_gesamtsaldo
+
         # - Überweisung bei unzureichendem Saldo → Exception?
+        with pytest.raises(Auszahlungsfehler):
+            konto_service.ueberweisen(gueltige_konto_id_1, gueltige_konto_id_2, betrag)
+
         # - Überweisung an nicht-existierendes Konto → Exception?
+        with pytest.raises(Transaktionsfehler):
+            konto_service.ueberweisen(gueltige_konto_id_1, ungueltige_konto_id, betrag)
+
         # - Überweisung von nicht-existierendem Konto → Exception?
-        assert True, "TODO: Tests für ueberweisen implementieren"
+        with pytest.raises(Transaktionsfehler):
+            konto_service.ueberweisen(ungueltige_konto_id, gueltige_konto_id_2, betrag)
 
 
 class TestSaldoFunktionen:
     """
     Tests für Saldo-bezogene Funktionen
-    TODO: Team B - Testet Saldo-Abfragen und -Berechnungen
     """
 
     def test_placeholder_gesamtsaldo(self):
-        """TODO: Team B - Tests für gesamtsaldo()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        betrag = Decimal("100.00")
+        erwarteter_gesamtsaldo = Decimal("0.00")
+
         # - Gesamtsaldo bei leerer Kontenliste (0)
+        assert konto_service.gesamtsaldo_berechnen() == erwarteter_gesamtsaldo
+
         # - Gesamtsaldo mit einem Konto
+        konto_service.konto_erstellen(betrag)
+        assert konto_service.gesamtsaldo_berechnen() == betrag
+
         # - Gesamtsaldo mit mehreren Konten
-        # - Korrekte Summe aller Salden
-        assert True, "TODO: Tests für gesamtsaldo implementieren"
+        konto_service.konto_erstellen(betrag)
+        assert konto_service.gesamtsaldo_berechnen() == betrag + betrag
 
 
 class TestUtilityFunktionen:
     """
     Tests für Hilfsfunktionen
-    TODO: Team B - Testet ID-Verwaltung und Export-Funktionen
     """
 
     def test_placeholder_get_max_konto_id(self):
-        """TODO: Team B - Tests für get_max_konto_id()"""
-        # Beispiel-Tests:
+        konto_service = KontoService()
+        betrag: Decimal = Decimal("100.00")
+        erwartete_erste_id = 1
+        erwartete_letzte_id = 1000
+
         # - Erste ID ist 1
         # - IDs werden fortlaufend vergeben
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1): 
+            assert konto_service.konto_erstellen(betrag) == i
+            if i == erwartete_letzte_id: 
+                assert konto_service.get_max_konto_id() == erwartete_letzte_id
+
         # - Keine doppelten IDs
-        assert True, "TODO: Tests für get_max_konto_id implementieren"
+        kontenliste = konto_service.konten_auflisten()
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1):
+            count_for_i = 0
+            for k in kontenliste:
+                if k["konto_id"] == i: 
+                    count_for_i += 1
+            assert count_for_i == 1
+
 
 class TestKontoServiceIntegration:
     """
     Integration-Tests zwischen Service und Konto-Klassen
-    TODO: Team B - Testet das Zusammenspiel aller Komponenten
     """
 
     def test_placeholder_vollstaendiger_workflow(self):
-        """TODO: Team B - Test für kompletten Workflow"""
-        # Beispiel-Test:
+        betrag: Decimal = Decimal("100.00")
+        erwartetes_gesamtsaldo = Decimal("700.00")
+        erwartete_erste_id = 1
+        erwartete_letzte_id = 5
+        
         # 1. Service erstellen
+        konto_service = KontoService()
+        assert konto_service
+
         # 2. Mehrere Konten erstellen
+        for i in range(erwartete_erste_id, erwartete_letzte_id + 1): 
+            assert konto_service.konto_erstellen(betrag) == i
+            if i == erwartete_letzte_id: 
+                assert konto_service.get_max_konto_id() == erwartete_letzte_id
+
         # 3. Einzahlungen durchführen
+        konto_service.einzahlen(4, betrag)
+        konto_service.einzahlen(5, betrag)
+        assert konto_service.gesamtsaldo_berechnen() == erwartetes_gesamtsaldo
+
         # 4. Überweisungen durchführen
+        konto_service.ueberweisen(4, 5, betrag)
+        konto_service.ueberweisen(1, 5, betrag)
+        with pytest.raises(Auszahlungsfehler):
+            konto_service.ueberweisen(3, 5, betrag + betrag)
+
         # 5. Gesamtsaldo prüfen
-        assert True, "TODO: Integration-Test implementieren"
+        assert konto_service.gesamtsaldo_berechnen() == erwartetes_gesamtsaldo
