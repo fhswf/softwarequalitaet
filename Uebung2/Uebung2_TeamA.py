@@ -48,11 +48,15 @@ def remove_task(task_id):
 
 """Markiert einen Task als 'done'"""
 def mark_done(task_name):
-    global tasks
+    found = False
+
     for task_id, task in tasks.items():
         if task[0] == task_name:
             task[3] = True
-    return "Erledigt"
+            found = True  # Passender Task gefunden
+
+    return found  # True bei Erfolg, sonst False
+
 
 """Zeige alle Tasks an"""
 def show_tasks():
@@ -63,10 +67,14 @@ def show_tasks():
 
 """Schaltet den Status einer zufälligen Aufgabe um: 'offen/fertig'"""
 def process_tasks():
+    if not tasks:
+        return False  # Kein Task vorhanden
+
     rand_id = random.choice(list(tasks.keys()))
-    tasks[rand_id][3] = not tasks[rand_id][3] # Schaltet den Status 'offen/fertig' um
-    return False
-    # TODO
+    tasks[rand_id][3] = not tasks[rand_id][3]
+
+    return True  # Status wurde erfolgreich geändert
+
 
 """Gibt einen Durchschnittswert auf Basis der ID zurück"""
 def calculate_task_average():
@@ -85,19 +93,21 @@ def upcoming_tasks():
 
 """entfernt abgeschlossene oder inaktive Tasks"""
 def cleanup():
-    global tasks
-    temp = {}
-    for task_id, task in tasks.items():
-        if not task[3]:
-            temp[task_id] = task
-    if len(temp) == len(tasks):
-        return
-    tasks.clear()
-    tasks.update(temp)
+    # IDs aller erledigten Tasks ermitteln
+    completed_ids = [
+        task_id for task_id, task in tasks.items()
+        if task[3]
+    ]
+
+    # Erledigte Tasks entfernen
+    for task_id in completed_ids:
+        del tasks[task_id]
+
+    return len(completed_ids)  # Anzahl entfernter Tasks
 
 
 def get_task_count():
-    return sum(1 for _ in tasks) if tasks else 0
+    return len(tasks) if tasks else 0
 
 
 add_task("Projekt abschließen", "25-05-2025", 1, task_id="hello")
