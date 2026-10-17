@@ -36,15 +36,28 @@ def get_exchange_rate_assessment(from_currency: str, to_currency: str) -> str:
         - "sehr günstig" (≥ 1.20)
     """
     # TODO: Team B - Implementierung hier!
+    
     # Tipp: Startet mit einfachstem Fall (z.B. nur "fair" zurückgeben)
     # Erweitert schrittweise basierend auf Tests!
     # 
     # API-Call-Code:
-    # url = (
-    #     f"https://api.exchangerate.com/convert?from={from_currency}&to={to_currency}"
-    # )
-    # response = requests.get(url, timeout=5)
-    # response.raise_for_status()
-    # data = response.json()
-    # rate = data.get("rate")
+    url = (f"https://api.exchangerate.com/convert?from={from_currency}&to={to_currency}")
+    response = requests.get(url, timeout=5)
+    response.raise_for_status()
+    data = response.json()
+    rate = data.get("rate")
+    return conversion_rate(rate)
+
+def conversion_rate(rate):
+    match rate:
+        case rate if rate < 0.90:
+            return "sehr ungünstig"
+        case rate if rate >= 0.90 and rate <= 0.99:
+            return "ungünstig"
+        case rate if rate >= 1.00 and rate <= 1.09:
+            return "fair"
+        case rate if rate >= 1.10 and rate <= 1.19:
+            return "günstig"
+        case rate if rate >= 1.20:
+            return "sehr günstig"
     pass

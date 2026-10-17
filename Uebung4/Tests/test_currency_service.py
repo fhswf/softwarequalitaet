@@ -23,6 +23,7 @@ Dokumentiert eure Autorschaft: Wer hat welchen TDD-Schritt gemacht?
 
 import pytest
 from unittest.mock import patch
+from ..Code.currency_service import get_exchange_rate_assessment
 
 # TODO: Team B - Import nach erster Implementierung:
 # from ..Code.currency_service import get_exchange_rate_assessment
@@ -52,16 +53,49 @@ class TestCurrencyService:
         assert True, "TODO: Durch echte Tests ersetzen"
     
     # TODO: Team B - Beispiel für ersten echten Test:
-    # def test_fair_rate(self):
-    #     """TDD-Zyklus 1: RED von [Name] um [Zeit]"""
-    #     with patch('requests.get') as mock_get:
-    #         # Simuliere API-Response
-    #         mock_get.return_value.json.return_value = {"rate": 1.05}
-    #         
-    #         result = get_exchange_rate_assessment("EUR", "USD")
-    #         assert result == "fair"
-    #         
-    #         # Optional: Verifiziere API-Aufruf
-    #         mock_get.assert_called_once()
+    def test_fair_rate(self):
+        """TDD-Zyklus 1: RED von WMME"""
+        """TDD-Zyklus 1: GREEN von WMME"""
+        """TDD-Zyklus 1: REFACTOR von WMME"""
+        with patch('requests.get') as mock_get:
+            # Simuliere API-Response
+            mock_get.return_value.json.return_value = {"rate": 1.05}
+
+            result = get_exchange_rate_assessment("EUR", "USD")
+            assert result == "fair"
+             
+             # Optional: Verifiziere API-Aufruf
+            mock_get.assert_called_once()
+
+    def test_verschiedene_waehrungen(self):
+        """TDD-Zyklus 2: RED von WMME"""
+        """TDD-Zyklus 2: GREEN von WMME"""
+        """TDD-Zyklus 2: REFACTOR von WMME"""
+        with patch('requests.get') as mock_get:
+            # Simuliere API-Response
+            mock_get.return_value.json.return_value = {"rate": 1.05}
+            result = get_exchange_rate_assessment("EUR", "USD")
+            assert result == "fair"
+
+            mock_get.return_value.json.return_value = {"rate": 0.85}
+            result = get_exchange_rate_assessment("EUR", "GBP")
+            assert result == "sehr ungünstig"
+
+            mock_get.return_value.json.return_value = {"rate": 1.15}
+            result = get_exchange_rate_assessment("USD", "EUR")
+            assert result == "günstig"
+
+            mock_get.return_value.json.return_value = {"rate": 1.25}
+            result = get_exchange_rate_assessment("USD", "GBP")
+            assert result == "sehr günstig"
+
+            mock_get.return_value.json.return_value = {"rate": 0.95}
+            result = get_exchange_rate_assessment("EUR", "USD")
+            assert result == "ungünstig"
+             
+             # Optional: Verifiziere API-Aufruf
+            mock_get.call_count == 5
+
+
     
     # TODO: Team B - Weitere Tests für alle Bewertungskategorien hinzufügen!
