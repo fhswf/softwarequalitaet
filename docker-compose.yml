@@ -10,6 +10,7 @@ services:
       - "9323:9323"
     volumes:
       - .:/workspace
+      - /workspace/node_modules
     environment:
       - DISPLAY=:99
       - RESOLUTION=1920x1080x24
