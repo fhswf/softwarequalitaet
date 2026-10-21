@@ -1,0 +1,15 @@
+services:
+  playwright-desktop:
+    image: ghcr.io/nouman9719/playwright-docker:latest
+    container_name: playwright-desktop
+    init: true
+    stop_grace_period: 1s
+    shm_size: '2gb'
+    ports:
+      - "6080:6080"
+      - "9323:9323"
+    volumes:
+      - .:/workspace
+    environment:
+      - DISPLAY=:99
+      - RESOLUTION=1920x1080x24
