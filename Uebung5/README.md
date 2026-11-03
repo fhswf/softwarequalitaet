@@ -1,84 +1,141 @@
-# Übungsblatt 5: UI-Test-Automatisierung mit Playwright
+# Übung 5: End-to-End-Testing mit Playwright
 
-Zu testende Anwendung: https://demo.playwright.dev/todomvc/
+In dieser Übung lernen Sie, wie man moderne Webanwendungen mithilfe von **Playwright** automatisiert testet. Sie werden sowohl aufgezeichnete Tests mit dem **Playwright CodeGen** erstellen als auch eigene, komplexere E2E-Tests manuell programmieren und ausführen.
 
-## 1. Playwright starten (Docker Desktop)
-Für diese Übung nutzen wir eine vorkonfigurierte **Playwright Desktop-Umgebung**, die Sie direkt im Browser (z. B. via GitHub Codespaces) nutzen können. 
+---
 
-1. Öffnen Sie ein Terminal im Hauptverzeichnis des Repositories.
-2. Starten Sie die Umgebung mit:
+## 1. Playwright starten (Docker / Codespaces & Lokale Installation)
+
+### Option A: Start über den Docker-Container (Empfohlen für GitHub Codespaces & Lokal)
+Für diese Übung steht eine fertige Desktop-Umgebung (XFCE + noVNC) mit vorinstalliertem Playwright bereit:
+
+1. Öffnen Sie ein Terminal und wechseln Sie in den Ordner `Uebung5`:
    ```bash
-   Uebung5/run.sh
-Sobald das Terminal Desktop is READY! anzeigt, öffnen Sie den XFCE-Desktop:
+   cd Uebung5
+   ```
+2. Starten Sie den Container über das Startskript:
+   ```bash
+   ./run.sh
+   ```
+3. Öffnen Sie die grafische Oberfläche im Browser:
+   * **Lokal:** Öffnen Sie [http://localhost:6080](http://localhost:6080) in Ihrem Browser.
+   * **GitHub Codespaces:** Klicken Sie unten im Terminal-Bereich auf den Reiter **Ports**, suchen Sie den Port **6080** und klicken Sie auf das **Weltkugel-Symbol (Open in Browser)**.
+4. Sie landen direkt auf dem Desktop. Alle Dateien, die Sie im Container unter `/workspace` (bzw. `/workspace/tests`) erstellen oder ändern, werden automatisch direkt in Ihrem `Uebung5`-Ordner gespeichert.
+5. Zum Beenden drücken Sie im Terminal einmal `Ctrl + C`.
 
-In Codespaces: Klicken Sie auf den Reiter Ports und öffnen Sie den Port 6080 im Browser.
+### Option B: Playwright lokal ohne Docker installieren (Optional)
+Falls Sie Playwright direkt auf Ihrem eigenen Rechner ohne Docker nutzen möchten, benötigen Sie Node.js. Folgen Sie dazu der offiziellen Installationsanleitung auf der Playwright-Webseite:
+* **Offizielle Anleitung:** [https://playwright.dev/docs/intro](https://playwright.dev/docs/intro)
+* **Kurzform im Terminal:**
+  ```bash
+  npm init playwright@latest
+  ```
 
-Lokal (Docker): Öffnen Sie http://localhost:6080/vnc.html?autoconnect=true&resize=scale im Browser.
+---
 
-(Hinweis: Wer Playwright stattdessen lieber lokal auf seinem eigenen Host-Rechner installieren möchte, findet die offizielle Anleitung hier: Playwright Installation Guide)
+## 2. Tests aufzeichnen mit Playwright CodeGen (Kurzanleitung)
 
-2. Tests aufzeichnen (CodeGen)
-Mit Playwright CodeGen können Sie Klicks im Browser direkt als Code aufzeichnen lassen.
+Mit **CodeGen** können Sie Klicks und Eingaben direkt im Browser ausführen, während Playwright automatisch den passenden Testcode generiert.
 
-Doppelklicken Sie auf dem virtuellen Desktop auf Playwright Codegen.
+### CodeGen starten
+* **Über den Desktop:** Doppelklicken Sie auf dem VNC-Desktop auf das Symbol **Playwright Codegen**.
+* **Über das Terminal:** Öffnen Sie das **Workspace Terminal** auf dem Desktop und führen Sie folgenden Befehl mit Ihrer gewünschten Ziel-URL aus:
+  ```bash
+  npx playwright codegen [https://demo.playwright.dev/todomvc/](https://demo.playwright.dev/todomvc/)
+  ```
 
-Geben Sie im sich öffnenden Browser die URL https://demo.playwright.dev/todomvc/ ein.
+### Tests mit CodeGen aufzeichnen
+1. Es öffnen sich zwei Fenster: das **Browserfenster** (mit der Webseite) und das **Playwright Inspector**-Fenster.
+2. Klicken Sie im Browserfenster auf Elemente oder tippen Sie Text ein – jede Aktion wird sofort als Code im Inspector-Fenster aufgezeichnet.
+3. **Assertions (Überprüfungen) hinzufügen:** Nutzen Sie die obere Werkzeugleiste im Inspector:
+   * `Assert visibility` (prüft, ob ein Element sichtbar ist)
+   * `Assert text` (prüft, ob ein bestimmter Text angezeigt wird)
+   * `Assert value` (prüft den Wert eines Eingabefelds)
+4. Klicken Sie auf **Record** (roter Punkt), um die Aufzeichnung zu beenden.
+5. Kopieren Sie den generierten Code über das **Copy**-Symbol und fügen Sie ihn in eine `.spec.ts`-Datei im Ordner `/workspace/tests/` ein.
 
-Führen Sie Aktionen aus (Todos eintragen, abhaken). Der Playwright Inspector zeichnet alles als fertigen TypeScript-Code auf.
+---
 
-Kopieren Sie den generierten Code und fügen Sie ihn in die Datei Uebung5/tests/todo.spec.ts ein.
+## 3. Tests manuell für Playwright schreiben
 
-3. Manuelle Tests schreiben und Assertions hinzufügen
-Beim manuellen Schreiben von Tests nutzen wir sogenannte Locators (z.B. getByPlaceholder, getByText, getByRole), um Elemente zu finden, und Assertions (expect), um Zustände zu prüfen.
+Manuelle Tests liegen im Ordner `tests/` und haben die Dateiendung `.spec.ts` (z. B. `tests/todo.spec.ts`).
 
-Beispiel für einen manuellen Test in todo.spec.ts:
-
-TypeScript
+### Grundstruktur eines Playwright-Tests
+```typescript
 import { test, expect } from '@playwright/test';
 
-test('Ein neues Todo wird hinzugefügt', async ({ page }) => {
+test('Neues Todo-Element hinzufügen und abhaken', async ({ page }) => {
+  // 1. Webseite öffnen
   await page.goto('[https://demo.playwright.dev/todomvc/](https://demo.playwright.dev/todomvc/)');
-  
-  // Element finden und interagieren
-  const newTodoInput = page.getByPlaceholder('What needs to be done?');
-  await newTodoInput.fill('Mein erstes Todo');
-  await newTodoInput.press('Enter');
 
-  // Zustand prüfen (Assertion)
-  await expect(page.getByText('Mein erstes Todo')).toBeVisible();
+  // 2. Element über Locator finden und Aktion ausführen
+  const input = page.getByPlaceholder('What needs to be done?');
+  await input.fill('Softwarequalität Übung 5 abschließen');
+  await input.press('Enter');
+
+  // 3. Ergebnis überprüfen (Assertion)
+  await expect(page.getByTestId('todo-title')).toHaveText([
+    'Softwarequalität Übung 5 abschließen'
+  ]);
 });
-4. Tests ausführen
-Um Ihre geschriebenen Tests auszuführen, haben Sie auf dem Desktop zwei Möglichkeiten:
+```
 
-Mit grafischer Oberfläche (UI Mode): Doppelklicken Sie auf Playwright UI. Hier können Sie Tests einzeln starten und im Trace Viewer genau sehen, was passiert ist.
+### Wichtige Befehle beim manuellen Schreiben
+* **Navigation:** `await page.goto('https://...')` öffnet eine URL.
+* **Locators (Elemente finden):**
+  * `page.getByRole('button', { name: 'Submit' })` – findet Elemente anhand ihrer Rolle.
+  * `page.getByPlaceholder('...')` – findet Eingabefelder über den Platzhaltertext.
+  * `page.getByText('...')` – findet Elemente anhand ihres sichtbaren Textes.
+* **Interaktionen:** `.click()`, `.fill('Text')`, `.press('Enter')`, `.check()`.
+* **Assertions (Überprüfungen):**
+  * `await expect(locator).toBeVisible()`
+  * `await expect(locator).toHaveText('...')`
+  * `await expect(locator).toHaveCount(3)`
 
-Im Terminal: Doppelklicken Sie auf Terminal (öffnet sich direkt in Uebung5) und tippen Sie: npx playwright test.
+---
 
-5. Aufgaben für Studierende
-Nutzen Sie Uebung5/tests/todo.spec.ts für die folgenden Aufgaben. Starten Sie mit CodeGen, um ein Gefühl dafür zu bekommen, und schreiben Sie komplexere Prüfungen danach manuell.
+## 4. Tests mit Playwright ausführen
 
-Aufgabe 1: Erste einfache Tests (mit CodeGen)
-Zeichnen Sie das Hinzufügen von drei neuen Todos auf.
+Sie können Ihre Tests entweder interaktiv über die grafische Oberfläche oder direkt über das Terminal starten:
 
-Setzen Sie mindestens ein Todo auf "erledigt" (Checkbox anklicken).
+### Über die grafische Test-UI (Interaktiv)
+* Doppelklicken Sie auf dem Desktop auf das Symbol **Playwright Test UI** (oder führen Sie im Workspace-Terminal `npx playwright test --ui` aus).
+* Klicken Sie links neben einem Test auf das **grüne Play-Symbol (▶)**, um den Test auszuführen.
+* Sie können jeden einzelnen Schritt auf der Zeitleiste anklicken, den DOM-Zustand vor und nach jedem Klick untersuchen und Fehler im Detail analysieren.
 
-Kopieren Sie den Code in Ihre Test-Datei.
+### Über das Terminal (Headless / CLI)
+* Öffnen Sie das **Workspace Terminal** auf dem Desktop und führen Sie folgenden Befehl aus:
+  ```bash
+  npx playwright test
+  ```
+* Um einen HTML-Testbericht anzuzeigen:
+  ```bash
+  npx playwright show-report
+  ```
 
-Fügen Sie manuell eine Assertion (expect) hinzu, die prüft, ob der Zähler „items left“ (unten links in der App) den korrekten Text anzeigt.
+---
 
-Aufgabe 2: Löschen & Toggle-All (Manuell)
-Schreiben Sie einen Test, der ein Todo via rotem "X" löscht (Tipp: das "X" erscheint erst beim Hovern. Nutzen Sie .hover()).
+## 5. Aufgabenstellung für die Übung
 
-Testen Sie den "Toggle-All"-Pfeil (links neben dem Eingabefeld). Er soll alle Todos auf erledigt setzen.
+Bearbeiten Sie die folgenden Teilaufgaben auf der Beispiel-Anwendung [https://demo.playwright.dev/todomvc/](https://demo.playwright.dev/todomvc/) und speichern Sie Ihre Tests im Ordner `tests/`:
 
-Prüfen Sie den Button „Clear completed“ (entfernt alle erledigten Todos).
+### Aufgabe 1: Einfache Tests mit CodeGen aufzeichnen
+1. Starten Sie **Playwright Codegen** auf dem Desktop.
+2. Zeichnen Sie einen einfachen Testablauf auf:
+   * Fügen Sie **zwei neue Todo-Einträge** hinzu.
+   * Markieren Sie das erste Todo als **erledigt (completed)**.
+   * Prüfen Sie mit der Funktion **Assert text** im CodeGen-Inspector, dass unten die Anzeige `1 item left` erscheint.
+3. Speichern Sie den aufgezeichneten Code in einer neuen Datei `tests/codegen-todo.spec.ts` und führen Sie ihn über die **Playwright Test UI** aus.
 
-Aufgabe 3: Filterung (Manuell)
-Prüfen Sie die Filter „Active“, „Completed“ und „All“ in der unteren Leiste.
-
-Schreiben Sie einen Test, der verifiziert, dass beim Klick auf „Active“ keine erledigten Todos mehr sichtbar sind.
-
-Aufgabe 4: Edge Cases (Komplexer)
-Was passiert bei einer leeren Eingabe (nur Enter drücken)?
-
-Prüfen Sie das Verhalten, wenn noch gar keine Todos existieren (der Button „Clear completed“ sollte unsichtbar sein). Verifizieren Sie dies mit toBeHidden().
+### Aufgabe 2: Komplexere Tests manuell schreiben
+Erstellen Sie eine neue Datei `tests/manual-todo.spec.ts` und implementieren Sie die folgenden drei Testszenarien **manuell** ohne CodeGen:
+1. **Filter-Logik testen (`Active` / `Completed`):**
+   * Legen Sie drei Todos an und markieren Sie eines davon als erledigt.
+   * Klicken Sie auf den Filter `Active` und prüfen Sie mit `expect(...).toHaveCount(2)`, dass nur die zwei offenen Einträge sichtbar sind.
+   * Klicken Sie auf den Filter `Completed` und prüfen Sie, dass genau ein Eintrag sichtbar ist.
+2. **Todo-Eintrag nachträglich bearbeiten:**
+   * Legen Sie ein Todo an, führen Sie einen Doppelklick darauf aus (`await locator.dblclick()`), ändern Sie den Text und bestätigen Sie mit `Enter`.
+   * Überprüfen Sie per Assertion, dass der geänderte Text in der Liste angezeigt wird.
+3. **Erledigte Einträge löschen (`Clear completed`) & Reload-Persistenz:**
+   * Markieren Sie ein Todo als erledigt und klicken Sie auf den Button `Clear completed`.
+   * Laden Sie die Seite neu (`await page.reload()`) und überprüfen Sie, dass nur noch die offenen Todos vorhanden sind und das gelöschte Todo nicht wieder erscheint.
