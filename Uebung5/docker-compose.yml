@@ -1,7 +1,7 @@
 services:
   playwright-desktop:
     build: .
-    image: ghcr.io/nouman9719/playwright-docker:latest
+    image: ghcr.io/fhswf/playwright-docker:latest
     container_name: playwright-desktop
     init: true
     stop_grace_period: 1s
